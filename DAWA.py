@@ -12,20 +12,8 @@ import warnings
 # Suppress warnings
 warnings.filterwarnings("ignore")
 
-from sqlalchemy import create_engine
-
-# Define PostgreSQL connection parameters
-user = "postgres"           # your PostgreSQL username
-password = "Rohith07%40"    # encoded '@' as '%40'
-host = "127.0.0.1"          # use IP instead of localhost to avoid socket issues
-port = "5432"               # default PostgreSQL port
-database = "ECommerce"      # your database name
-
-# Create SQLAlchemy engine for PostgreSQL
-engine = create_engine(
-    f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}"
-)
-
+# ✅ Use Render PostgreSQL connection string from secrets.toml
+engine = create_engine(st.secrets["db_url"])
 
 # credentials dictionary
 USER_CREDENTIALS = {
@@ -36,7 +24,6 @@ USER_CREDENTIALS = {
 # Initialize session state
 if "authenticated" not in st.session_state:
     st.session_state["authenticated"] = False
-
 
 def login():
     st.header("🔐 Welcome to your E-Commerce Hub")
@@ -50,19 +37,17 @@ def login():
             st.session_state["authenticated"] = True
             st.success(f"Welcome, {username}!")
             st.rerun()
-    
         else:
             st.error("Invalid username or password")
 
 def main_app():
-
-    # loading data
-    orders = pd.read_sql('select * from orders',engine)
-    order_item_refunds = pd.read_sql('select * from order_item_refunds',engine)
-    order_items = pd.read_sql('select * from order_items',engine)
-    products = pd.read_sql('select * from products',engine)
-    website_pageviews = pd.read_sql('select * from website_pageviews',engine)
-    w_sessions = pd.read_sql('select * from w_sessions',engine)
+    # loading data from PostgreSQL
+    orders = pd.read_sql('SELECT * FROM orders', engine)
+    order_item_refunds = pd.read_sql('SELECT * FROM order_item_refunds', engine)
+    order_items = pd.read_sql('SELECT * FROM order_items', engine)
+    products = pd.read_sql('SELECT * FROM products', engine)
+    website_pageviews = pd.read_sql('SELECT * FROM website_pageviews', engine)
+    w_sessions = pd.read_sql('SELECT * FROM w_sessions', engine)
 
 
     st.sidebar.title("🧭 Navigation")
