@@ -111,10 +111,12 @@ A fresh-faced startup on a mission to deliver high-quality, huggable stuffed toy
         filtered_data = filtered_data.merge(w_sessions,how="left",left_on="website_session_id",right_on="website_session_id",suffixes=("","_sessions"))
 
         # Extract Year for filtering
+        filtered_data["created_at_orderitem"] = pd.to_datetime(filtered_data["created_at_orderitem"], errors="coerce")
+        filtered_data["created_at_orderitem"] = pd.to_datetime(filtered_data["created_at_orderitem"], errors="coerce")
         filtered_data["year"] = filtered_data["created_at_orderitem"].dt.year
 
         # Extract Month for filtering
-        filtered_data["month"] = filtered_data["created_at_orderitem"].dt.month_name()
+        filtered_data["month"] = pd.to_datetime(filtered_data["created_at_orderitem"], errors="coerce").dt.month_name()
         month_order = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"]
         filtered_data["month"] = pd.Categorical(filtered_data["month"],categories=month_order,ordered=True)
 
@@ -256,6 +258,7 @@ A fresh-faced startup on a mission to deliver high-quality, huggable stuffed toy
         filtered_data_2 = filtered_data_2.merge(w_sessions, how="left", on="website_session_id",suffixes=("_webpage", "_website"))
 
         # Extract Year for filtering
+        filtered_data_2["created_at_webpage"] = pd.to_datetime(filtered_data_2["created_at_webpage"], errors="coerce")
         filtered_data_2["year"] = filtered_data_2["created_at_webpage"].dt.year
 
         # Extract Month for filtering
@@ -650,7 +653,7 @@ A fresh-faced startup on a mission to deliver high-quality, huggable stuffed toy
 
 
         # Step 1: Convert to datetime if not already
-        w_sessions["created_at"] = pd.to_datetime(w_sessions["created_at"])
+        w_sessions["created_at"] = pd.to_datetime(w_sessions["created_at"], errors="coerce")
 
         # Step 2: Extract weekday names
         w_sessions["weekday"] = w_sessions["created_at"].dt.day_name()
@@ -825,6 +828,8 @@ A fresh-faced startup on a mission to deliver high-quality, huggable stuffed toy
         filtered_data = filtered_data.merge(w_sessions,how="left",left_on="website_session_id",right_on="website_session_id",suffixes=("","_sessions"))
 
         # Extract Year for filtering
+        filtered_data["created_at_orderitem"] = pd.to_datetime(filtered_data["created_at_orderitem"], errors="coerce")
+        filtered_data["created_at_orderitem"] = pd.to_datetime(filtered_data["created_at_orderitem"], errors="coerce")
         filtered_data["year"] = filtered_data["created_at_orderitem"].dt.year
 
         # cogs time to decimal
@@ -1080,6 +1085,8 @@ A fresh-faced startup on a mission to deliver high-quality, huggable stuffed toy
         filtered_data = filtered_data.merge(w_sessions,how="left",left_on="website_session_id",right_on="website_session_id",suffixes=("","_sessions"))
 
         # Extract Year for filtering
+        filtered_data["created_at_orderitem"] = pd.to_datetime(filtered_data["created_at_orderitem"], errors="coerce")
+        filtered_data["created_at_orderitem"] = pd.to_datetime(filtered_data["created_at_orderitem"], errors="coerce")
         filtered_data["year"] = filtered_data["created_at_orderitem"].dt.year
 
         # cogs time to decimal
@@ -1197,7 +1204,7 @@ A fresh-faced startup on a mission to deliver high-quality, huggable stuffed toy
         st.markdown("---")
 
         # Step 1: Ensure 'created_at' is datetime
-        w_sessions["created_at"] = pd.to_datetime(w_sessions["created_at"])
+        w_sessions["created_at"] = pd.to_datetime(w_sessions["created_at"], errors="coerce")
 
         # Step 2: Extract weekday and hour
         w_sessions["weekday"] = w_sessions["created_at"].dt.day_name()
@@ -1234,7 +1241,7 @@ A fresh-faced startup on a mission to deliver high-quality, huggable stuffed toy
 
         st.markdown("---")
         # Step 1: Convert timestamp to datetime
-        w_sessions["created_at"] = pd.to_datetime(w_sessions["created_at"])
+        w_sessions["created_at"] = pd.to_datetime(w_sessions["created_at"], errors="coerce")
 
         # Step 2: Extract weekday and hour
         w_sessions["weekday"] = w_sessions["created_at"].dt.day_name()
@@ -1318,11 +1325,14 @@ A fresh-faced startup on a mission to deliver high-quality, huggable stuffed toy
         st.markdown("---")
         st.markdown("### 📈 Month-over-Month Revenue Growth")
         # Step 9: Line Chart for MoM Growth
-        fig, ax = plt.subplots(figsize=(12, 6))
-        sns.lineplot(data=monthly_analysis,x="month_name",y="MoM_growth_%",marker="o",color="steelblue",ax=ax)
+
+        monthly_plot_df = (monthly_analysis.groupby("month_name", as_index=False).agg({"MoM_growth_%": "mean"}))
+        
+        fig, ax = plt.subplots(figsize=(12,6))
+        sns.lineplot(data=monthly_plot_df,x="month_name",y="MoM_growth_%",marker="o",color="steelblue",ax=ax,ci=None)
 
         # Add labels on each point
-        for _, row in monthly_analysis.iterrows():
+        for _, row in monthly_plot_df.iterrows():
             if pd.notnull(row["MoM_growth_%"]):
                 ax.text(x=row["month_name"],y=row["MoM_growth_%"],s=f"{row['MoM_growth_%']:.1f}%",ha="center",va="bottom",fontsize=9)
 
@@ -1372,6 +1382,8 @@ A fresh-faced startup on a mission to deliver high-quality, huggable stuffed toy
         filtered_data = filtered_data.merge(w_sessions,how="left",left_on="website_session_id",right_on="website_session_id",suffixes=("","_sessions"))
 
         # Extract Year for filtering
+        filtered_data["created_at_orderitem"] = pd.to_datetime(filtered_data["created_at_orderitem"], errors="coerce")
+        filtered_data["created_at_orderitem"] = pd.to_datetime(filtered_data["created_at_orderitem"], errors="coerce")
         filtered_data["year"] = filtered_data["created_at_orderitem"].dt.year
 
         # cogs time to decimal
@@ -1666,6 +1678,8 @@ A fresh-faced startup on a mission to deliver high-quality, huggable stuffed toy
         filtered_data = filtered_data.merge(w_sessions,how="left",left_on="website_session_id",right_on="website_session_id",suffixes=("","_sessions"))
 
         # Extract Year for filtering
+        filtered_data["created_at_orderitem"] = pd.to_datetime(filtered_data["created_at_orderitem"], errors="coerce")
+        filtered_data["created_at_orderitem"] = pd.to_datetime(filtered_data["created_at_orderitem"], errors="coerce")
         filtered_data["year"] = filtered_data["created_at_orderitem"].dt.year
 
         # cogs time to decimal
